@@ -24,7 +24,11 @@ describe Oystercard do
   end
 
   describe 'card status' do
+    it 'declines cards that do not have the minimum balance' do
+      expect{ subject.touch_in }.to raise_error "Insufficient funds: please top up"
+    end
     it 'touches in' do
+      subject.top_up(2)
       subject.touch_in
       expect(subject).to be_in_journey
     end
@@ -32,6 +36,7 @@ describe Oystercard do
       expect(subject).not_to be_in_journey
     end
     it 'touches out' do
+      subject.top_up(2)
       subject.touch_in
       subject.touch_out
       expect(subject).to_not be_in_journey
