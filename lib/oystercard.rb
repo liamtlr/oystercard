@@ -15,20 +15,22 @@ class Oystercard
     @balance += val
   end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   def touch_in
     raise "Insufficient funds: please top up" if @balance < MIN_FARE
     @in_journey = true
   end
 
   def touch_out
-    @in_journey = false
+    deduct; @in_journey = false
   end
 
   def in_journey?
     @in_journey
+  end
+
+  private
+
+  def deduct(fare = MIN_FARE)
+    @balance -= fare
   end
 end
