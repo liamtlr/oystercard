@@ -1,12 +1,18 @@
 require 'oystercard'
 
 describe Oystercard do
-  it 'initializes a balance' do
-    expect(subject.balance).to eq 0
+  # it { is_expected.to respond_to(:top_up).with(1).argument }
+  # it { is_expected.to respond_to(:touch_out) }
+  # it { is_expected.to respond_to(:touch_in).with(1).argument  }
+
+  describe 'initialization' do
+    it 'initializes a balance' do
+      expect(subject.balance).to eq 0
+    end
+    it 'initializes a journey history' do
+      expect(subject.journey_history).to eq []
+    end
   end
-  it { is_expected.to respond_to(:top_up).with(1).argument }
-  it { is_expected.to respond_to(:touch_out) }
-  it { is_expected.to respond_to(:touch_in).with(1).argument  }
 
   describe 'card balance' do
     maximum_balance = Oystercard::MAX_BALANCE
@@ -34,7 +40,7 @@ describe Oystercard do
     end
   end
 
-  describe 'card location' do
+  describe 'journey history' do
     let(:station) { double(:station) }
     before do
       subject.top_up(2)
