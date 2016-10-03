@@ -5,21 +5,22 @@ describe Oystercard do
     expect(subject.balance).to eq 0
   end
   it { is_expected.to respond_to(:top_up).with(1).argument }
-  it { is_expected.to respond_to(:deduct).with(1).argument }
+  it { is_expected.to respond_to(:touch_out) }
   it { is_expected.to respond_to(:touch_in) }
 
   describe 'card balance' do
+    maximum_balance = Oystercard::MAX_BALANCE
+    minimum_fare = Oystercard::MIN_FARE
     it 'tops up a card' do
       expect{ subject.top_up(10) }.to change{ subject.balance }.by 10
     end
     it 'cannot have a balance exceeding the maximum' do
-      maximum_balance = Oystercard::MAX_BALANCE
       subject.top_up(maximum_balance)
       expect{ subject.top_up(1) }.to raise_error "Maxmimum card balance is £#{maximum_balance}"
     end
     it 'deducts the journey fare' do
       subject.top_up(30)
-      expect{ subject.deduct(3) }.to change{ subject.balance }.by -3
+      expect{ subject.touch_out }.to change{ subject.balance }.by -minimum_fare
     end
   end
 
