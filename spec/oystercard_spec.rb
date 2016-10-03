@@ -10,11 +10,12 @@ describe Oystercard do
       expect(subject.balance).to eq 0
     end
     it 'initializes a journey history' do
-      expect(subject.journey_history).to eq []
+      expect(subject.journey_history).to be_empty
     end
   end
 
   describe 'card balance' do
+    let(:station) { double(:station) }
     maximum_balance = Oystercard::MAX_BALANCE
     minimum_fare = Oystercard::MIN_FARE
     it 'tops up a card' do
@@ -26,7 +27,7 @@ describe Oystercard do
     end
     it 'deducts the journey fare' do
       subject.top_up(30)
-      expect{ subject.touch_out }.to change{ subject.balance }.by -minimum_fare
+      expect{ subject.touch_out(station) }.to change{ subject.balance }.by -minimum_fare
     end
   end
 
@@ -41,23 +42,28 @@ describe Oystercard do
   end
 
   describe 'journey history' do
-    let(:station) { double(:station) }
+    let(:station1) { double(:station1) }
+    let(:station2) { double(:station2) }
     before do
       subject.top_up(2)
-      subject.touch_in(station)
+      subject.touch_in(station1)
     end
     it 'touches in' do
       expect(subject).to be_in_journey
     end
     it 'stores the name of the entry station' do
-      expect(subject.entry_station).to eq station
+      expect(subject.entry_station).to eq station1
     end
     it 'touches out' do
-      subject.touch_out
+      subject.touch_out(station2)
       expect(subject).to_not be_in_journey
     end
+    it 'stores journey history' do
+      subject.touch_out(station2)
+      expect(subject.journey_history.last).to eq ({ :start => station1, :finish => station2 })
+    end
     it 'resets the entry station' do
-      subject.touch_out
+      subject.touch_out(station2)
       expect(subject.entry_station).to eq nil
     end
   end
