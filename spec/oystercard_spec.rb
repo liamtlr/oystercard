@@ -6,7 +6,7 @@ describe Oystercard do
   end
   it { is_expected.to respond_to(:top_up).with(1).argument }
   it { is_expected.to respond_to(:touch_out) }
-  it { is_expected.to respond_to(:touch_in) }
+  it { is_expected.to respond_to(:touch_in).with(1).argument  }
 
   describe 'card balance' do
     maximum_balance = Oystercard::MAX_BALANCE
@@ -25,22 +25,34 @@ describe Oystercard do
   end
 
   describe 'card status' do
+    let(:station) { double(:station) }
     it 'declines cards that do not have the minimum balance' do
-      expect{ subject.touch_in }.to raise_error "Insufficient funds: please top up"
-    end
-    it 'touches in' do
-      subject.top_up(2)
-      subject.touch_in
-      expect(subject).to be_in_journey
+      expect{ subject.touch_in(station) }.to raise_error "Insufficient funds: please top up"
     end
     it 'shows if in journey' do
       expect(subject).not_to be_in_journey
     end
-    it 'touches out' do
+  end
+
+  describe 'card location' do
+    let(:station) { double(:station) }
+    before do
       subject.top_up(2)
-      subject.touch_in
+      subject.touch_in(station)
+    end
+    it 'touches in' do
+      expect(subject).to be_in_journey
+    end
+    it 'stores the name of the entry station' do
+      expect(subject.entry_station).to eq station
+    end
+    it 'touches out' do
       subject.touch_out
       expect(subject).to_not be_in_journey
+    end
+    it 'resets the entry station' do
+      subject.touch_out
+      expect(subject.entry_station).to eq nil
     end
   end
 
