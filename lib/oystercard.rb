@@ -23,6 +23,7 @@ class Oystercard
   end
 
   def touch_in(station)
+    #penalty + message if !(@current_journey.empty?) + reset
     fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
     set_entry(station)
   end
