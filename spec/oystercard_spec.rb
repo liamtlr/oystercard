@@ -67,7 +67,7 @@ describe Oystercard do
       it "remembers a journey" do
         subject.touch_in("Chorleywood")
         subject.touch_out("Knightsbridge")
-        expect(subjec.list_journeys).to eq [{entry_station: :chorleywood, exit_station: :knightsbridge}]
+        expect(subject.list_journeys).to eq [{entry_station: :chorleywood, exit_station: :knightsbridge}]
       end
 
     end
