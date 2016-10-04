@@ -41,7 +41,7 @@ describe Oystercard do
 
       it "should remember the entry station" do
         subject.touch_in(station)
-        expect(subject.entry_station).to eq station
+        expect(subject.current_journey[:entry_station]).to eq station
       end
 
     end
@@ -60,14 +60,18 @@ describe Oystercard do
     end
 
     describe "#list_journeys" do
+      let(:entry_station) { double :station }
+      let(:exit_station) { double :station }
+      let(:journey) {{entry_station: :entry_station, exit_station: :exit_station}}
+
       it "defaults to empty array" do
         expect(subject.list_journeys).to eq []
       end
 
       it "remembers a journey" do
-        subject.touch_in("Chorleywood")
-        subject.touch_out("Knightsbridge")
-        expect(subjec.list_journeys).to eq [{entry_station: :chorleywood, exit_station: :knightsbridge}]
+        subject.touch_in(:entry_station)
+        subject.touch_out(:exit_station)
+        expect(subject.list_journeys).to include journey
       end
 
     end
