@@ -34,30 +34,30 @@ describe Oystercard do
   end
 
   describe "#in_journey" do
-    it {is_expected.to respond_to(:in_journey)}
-
-    it "knows it is in a journey" do
-
-    end
+    it {is_expected.to respond_to(:in_journey?)}
   end
 
   describe "#touch_in" do
     it "should make in_journey true" do
+      subject.top_up(Oystercard::TOP_UP_LIMIT)
       subject.touch_in
-      expect(subject.in_journey).to be true
+      expect(subject).to be_in_journey
+    end
+
+    it "fails if balance is insufficient" do
+      minimum_balance = Oystercard::MINIMUM_BALANCE
+      expect{subject.touch_in}.to raise_error "Card empty - #{minimum_balance} required"
     end
   end
 
   describe "#touch_out" do
     it "should make in_journey false" do
-      puts subject.in_journey
       subject.touch_in
-      puts subject.in_journey
       subject.touch_out
-      puts subject.in_journey
-      expect(subject.in_journey).to be false
+      expect(subject).not_to be_in_journey
     end
   end
+
 
 
 end
