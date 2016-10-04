@@ -10,6 +10,12 @@ describe Oystercard do
 
   it { is_expected.to respond_to :list_journeys }
 
+  describe "#list_journeys" do
+    it "defaults to empty array" do
+      expect(subject.list_journeys).to eq []
+    end
+  end
+
   describe "#top_up" do
     it "can top up the balance" do
       expect {subject.top_up 10 }.to change{ subject.balance }.by 10
@@ -47,13 +53,13 @@ describe Oystercard do
     describe "#touch_out" do
       it "should make in_journey false" do
         subject.touch_in(station)
-        subject.touch_out
+        subject.touch_out(station)
         expect(subject).not_to be_in_journey
       end
 
       it "should deduct the right amount upon touching out" do
         subject.touch_in(station)
-        expect{subject.touch_out}.to change{subject.balance}.by (-Oystercard::FARE)
+        expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
       end
     end
   end
