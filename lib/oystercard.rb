@@ -9,6 +9,7 @@ class Oystercard
   def initialize
     @balance = 0
     @entry_station = nil
+    @list_journeys = []
   end
 
   def top_up money

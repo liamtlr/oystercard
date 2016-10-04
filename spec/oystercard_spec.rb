@@ -10,11 +10,6 @@ describe Oystercard do
 
   it { is_expected.to respond_to :list_journeys }
 
-  describe "#list_journeys" do
-    it "defaults to empty array" do
-      expect(subject.list_journeys).to eq []
-    end
-  end
 
   describe "#top_up" do
     it "can top up the balance" do
@@ -48,6 +43,7 @@ describe Oystercard do
         subject.touch_in(station)
         expect(subject.entry_station).to eq station
       end
+
     end
 
     describe "#touch_out" do
@@ -62,6 +58,21 @@ describe Oystercard do
         expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
       end
     end
+
+    describe "#list_journeys" do
+      it "defaults to empty array" do
+        expect(subject.list_journeys).to eq []
+      end
+
+      it "remembers a journey" do
+        subject.touch_in("Chorleywood")
+        subject.touch_out("Knightsbridge")
+        expect(subjec.list_journeys).to eq [{entry_station: :chorleywood, exit_station: :knightsbridge}]
+      end
+
+    end
+
+
   end
   context "when not topped up" do
     describe "#touch_in" do
@@ -71,6 +82,7 @@ describe Oystercard do
       end
     end
   end
+
 
 
 end
