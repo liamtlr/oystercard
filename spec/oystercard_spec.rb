@@ -33,9 +33,6 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey" do
-    it {is_expected.to respond_to(:in_journey?)}
-  end
 
   describe "#touch_in" do
     it "should make in_journey true" do
@@ -48,10 +45,16 @@ describe Oystercard do
       minimum_balance = Oystercard::MINIMUM_BALANCE
       expect{subject.touch_in}.to raise_error "Card empty - #{minimum_balance} required"
     end
+
+    it "should deduct the right amount upon touching in" do
+      subject.top_up(Oystercard::TOP_UP_LIMIT)
+      expect{subject.touch_in}.to change{subject.balance}.by (-FARE)
+    end
   end
 
   describe "#touch_out" do
     it "should make in_journey false" do
+      subject.top_up(Oystercard::TOP_UP_LIMIT)
       subject.touch_in
       subject.touch_out
       expect(subject).not_to be_in_journey
