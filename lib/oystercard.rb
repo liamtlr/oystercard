@@ -19,16 +19,16 @@ class Oystercard
       @balance -= money
   end
 
-  def in_journey is_in
-    @in_journey = is_in
+  def in_journey_method
+    @in_journey = !@injourney
   end
 
   def touch_in
-    in_journey(true)
+    in_journey
   end
 
   def touch_out
-    in_journey(false)
+    in_journey
   end
 
 end

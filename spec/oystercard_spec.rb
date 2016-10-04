@@ -50,8 +50,11 @@ describe Oystercard do
 
   describe "#touch_out" do
     it "should make in_journey false" do
+      puts subject.in_journey
       subject.touch_in
+      puts subject.in_journey
       subject.touch_out
+      puts subject.in_journey
       expect(subject.in_journey).to be false
     end
   end
