@@ -43,12 +43,6 @@ context 'card being used to touch in and out' do
       subject.touch_out(station)
       expect(subject.entry_station).to eq nil
     end
-    it 'receives information on journey history' do
-      journey_history = []
-      journey_hash = { station: station, exit_station: exit_station }
-      subject.touch_out(exit_station)
-      expect(subject.journey_history.last).to eq journey_hash
-    end
     it 'charges minimum fare on touch out' do
       expect {subject.touch_out(station)}.to change{subject.balance}.by(-min_fare)
     end
