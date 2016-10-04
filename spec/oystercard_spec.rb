@@ -26,41 +26,45 @@ describe Oystercard do
     end
   end
 
-  describe "#deduct" do
-    it "should deduct amount" do
-      subject.top_up 40
-      expect {subject.deduct 20}.to change{subject.balance}.by (-20)
+  context "when topped up" do
+    before(:each) do
+      subject.top_up(Oystercard::TOP_UP_LIMIT)
+    end
+
+    describe "#touch_in" do
+      it "should make in_journey true" do
+        subject.touch_in
+        expect(subject).to be_in_journey
+      end
+
+      it "should remember the entry station" do
+        station = double(:station)
+        subject.touch_in(station)
+        expect(subject.entry_station).to eq station
+      end
+    end
+
+    describe "#touch_out" do
+      it "should make in_journey false" do
+        subject.touch_in
+        subject.touch_out
+        expect(subject).not_to be_in_journey
+      end
+
+      it "should deduct the right amount upon touching out" do
+        subject.touch_in
+        expect{subject.touch_out}.to change{subject.balance}.by (-Oystercard::FARE)
+      end
     end
   end
-
-
-  describe "#touch_in" do
-    it "should make in_journey true" do
-      subject.top_up(Oystercard::TOP_UP_LIMIT)
-      subject.touch_in
-      expect(subject).to be_in_journey
-    end
-
-    it "fails if balance is insufficient" do
-      minimum_balance = Oystercard::MINIMUM_BALANCE
-      expect{subject.touch_in}.to raise_error "Card empty - #{minimum_balance} required"
-    end
-
-    it "should deduct the right amount upon touching in" do
-      subject.top_up(Oystercard::TOP_UP_LIMIT)
-      expect{subject.touch_in}.to change{subject.balance}.by (-FARE)
+  context "when not topped up" do
+    describe "#touch_in" do
+      it "fails if balance is insufficient" do
+        minimum_balance = Oystercard::MINIMUM_BALANCE
+        expect{subject.touch_in}.to raise_error "Card empty - #{minimum_balance} required"
+      end
     end
   end
-
-  describe "#touch_out" do
-    it "should make in_journey false" do
-      subject.top_up(Oystercard::TOP_UP_LIMIT)
-      subject.touch_in
-      subject.touch_out
-      expect(subject).not_to be_in_journey
-    end
-  end
-
 
 
 end
