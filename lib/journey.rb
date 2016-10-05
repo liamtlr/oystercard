@@ -13,13 +13,16 @@ PENALTY_FARE = 6
 
   end
 
-  def end_journey(exit_station = "unknown")
+  def end_journey(exit_station)
     @exit_station = exit_station
     @fare = MIN_FARE if complete?
   end
 
   def stations
-    {entrystation: entry_station[:name], exitstation: exit_station[:name]}
+    if @exit_station.nil?
+         {entrystation: @entry_station[:name], exitstation: "Unknown"}
+    else {entrystation: @entry_station[:name], exitstation: @exit_station[:name]}
+    end
   end
 
   def complete?
