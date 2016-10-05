@@ -1,8 +1,9 @@
 require 'journey'
 
-
-
 describe Journey do
+
+  penalty_fare = Journey::PENALTY_FARE
+  minimum_fare = Journey::MINIMUM_FARE
 
   let(:station) {double(:station, name: 'Old Street', zone: 1)}
   let(:exit_station) {double :station, name: 'Kentish Town', zone: 2}
@@ -33,8 +34,13 @@ end
 
   describe '#charge' do
     it 'applies a penalty charge if the journey is incomplete' do
-    expect(subject.charge). to eq penalty_fare
-  end
+      expect(subject.charge). to eq penalty_fare
+    end
+    it 'applies the standard fare if the joruney is complete' do
+      subject.end_journey(exit_station)
+      expect(subject.charge).to eq minimum_fare
+    end
+
 end
 
 end
