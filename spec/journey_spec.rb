@@ -1,21 +1,30 @@
 require 'journey'
 
+
+
 describe Journey do
 
-  let(:station) {double :station, name: 'Old Street', zone: 1}
-  let(:exit_station) { double :station, name: 'Kentish Town', zone: 2 }
+  let(:station) {double(:station, name: 'Old Street', zone: 1)}
+  let(:exit_station) {double :station, name: 'Kentish Town', zone: 2}
   let(:subject) {described_class.new(station)}
 
   describe '#initialize' do
-  it 'receives an entry station' do
+    it 'receives an entry station' do
     expect(subject.entry_station).to eq station
   end
-end
+  end
 
   describe '#end_journey' do
     it 'receives an exit station' do
-    expect(subject.end_journey(exit_station)).to eq exit_station
+      subject.end_journey(exit_station)
+      expect(subject.exit_station).to eq exit_station
+    end
   end
-end
+
+  it 'knows journey is complete' do
+    subject.end_journey(exit_station)
+    expect(subject.journey_complete?).to eq true
+  end
+
 
 end
