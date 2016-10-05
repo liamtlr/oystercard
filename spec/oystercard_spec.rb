@@ -79,7 +79,7 @@ describe Oystercard do
     describe "#touch_in" do
       it "fails if balance is insufficient" do
         minimum_balance = Oystercard::MINIMUM_BALANCE
-        expect{subject.touch_in(station)}.to raise_error "Card empty - #{minimum_balance} required"
+        expect{subject.touch_in(station)}.to raise_error "Card empty - £#{minimum_balance} required"
       end
     end
   end
