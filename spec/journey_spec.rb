@@ -21,5 +21,10 @@ describe Journey do
     end
   end
 
+  it 'knows journey is complete' do
+    subject.end_journey(exit_station)
+    expect(subject.journey_complete?).to eq true
+  end
+
 
 end
