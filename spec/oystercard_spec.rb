@@ -1,6 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
+
   # it { is_expected.to respond_to(:top_up).with(1).argument }
   # it { is_expected.to respond_to(:touch_out) }
   # it { is_expected.to respond_to(:touch_in).with(1).argument  }
