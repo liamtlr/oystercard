@@ -19,7 +19,7 @@ PENALTY_FARE = 6
   end
 
   def stations
-    {entrystation: entry_station[name], exitstation: exit_station[name]}
+    {entrystation: entry_station[:name], exitstation: exit_station[:name]}
   end
 
   def complete?
