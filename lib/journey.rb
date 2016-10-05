@@ -12,6 +12,10 @@ class Journey
     @exit_station = exit_station
   end
 
+  def complete?
+    !!@exit_station 
+  end
+
 end
 
 #Journey - start journey

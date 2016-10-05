@@ -21,10 +21,20 @@ describe Journey do
     end
   end
 
-  it 'knows journey is complete' do
+  describe '#complete?' do
+    it 'knows journey is complete' do
     subject.end_journey(exit_station)
-    expect(subject.journey_complete?).to eq true
+    expect(subject.complete?).to eq true
   end
+  it 'knows journey is incomplete' do
+    expect(subject.complete?).to eq false
+  end
+end
 
+  describe '#charge' do
+    it 'applies a penalty charge if the journey is incomplete' do
+    expect(subject.charge). to eq penalty_fare
+  end
+end
 
 end
