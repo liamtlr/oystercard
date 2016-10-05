@@ -2,13 +2,15 @@ require 'station'
 
 describe Station do
 
-  describe '#initialize' do
-    let(:subject) {described_class.new(:oxford_circus, 1)}
-    it 'sets a station name upon initialization' do
-      expect(subject.name).to eq :oxford_circus
+  describe "#initialize" do
+    let(:subject) {described_class.new(name: :knightsbridge, zone: 3)}
+
+    it "should have a name" do
+      expect(subject.name).to eq :knightsbridge
     end
-    it 'sets a zone upon initialization' do
-      expect(subject.zone).to eq 1
+
+    it "should have a zone number" do
+      expect(subject.zone).to eq 3
     end
   end
 
