@@ -1,92 +1,73 @@
-require './lib/oystercard'
+
+require 'oystercard'
 
 describe Oystercard do
-  subject(:oystercard) {described_class.new}
-  let (:station) {double(:station)}
 
-  it "has an initial balance of 0" do
-    expect(subject.balance).to eq 0
+  # it { is_expected.to respond_to(:top_up).with(1).argument }
+  # it { is_expected.to respond_to(:touch_out) }
+  # it { is_expected.to respond_to(:touch_in).with(1).argument  }
+
+  describe 'initialization' do
+    it 'initializes a balance' do
+      expect(subject.balance).to eq 0
+    end
+    it 'initializes a journey history' do
+      expect(subject.journey_history).to be_empty
+    end
   end
 
-  it { is_expected.to respond_to :list_journeys }
-
-
-  describe "#top_up" do
-    it "can top up the balance" do
-      expect {subject.top_up 10 }.to change{ subject.balance }.by 10
+  describe 'card balance' do
+    let(:station) { double(:station) }
+    maximum_balance = Oystercard::MAX_BALANCE
+    minimum_fare = Oystercard::MIN_FARE
+    it 'tops up a card' do
+      expect{ subject.top_up(10) }.to change{ subject.balance }.by 10
     end
-
-    it "has a top_up limit" do
-      #Oystercard::TOP_UP_LIMIT = 10
-      expect(Oystercard::TOP_UP_LIMIT.class).to be Fixnum
-    end
-
-    it "fails if you try to exceed top-up limit" do
-      maximum_balance = Oystercard::TOP_UP_LIMIT
+    it 'cannot have a balance exceeding the maximum' do
       subject.top_up(maximum_balance)
-      expect{subject.top_up 1}.to raise_error "Top-up limit of £#{maximum_balance} exceeded."
+      expect{ subject.top_up(1) }.to raise_error "Maxmimum card balance is £#{maximum_balance}"
+    end
+    it 'deducts the journey fare' do
+      subject.top_up(30)
+      expect{ subject.touch_out(station) }.to change{ subject.balance }.by (-minimum_fare)
     end
   end
 
-  context "when topped up" do
-    before(:each) do
-      subject.top_up(Oystercard::TOP_UP_LIMIT)
+  describe 'card status' do
+    let(:station) { double(:station) }
+    it 'declines cards that do not have the minimum balance' do
+      expect{ subject.touch_in(station) }.to raise_error "Insufficient funds: please top up"
     end
-
-    describe "#touch_in" do
-      it "should make in_journey true" do
-        subject.touch_in(station)
-        expect(subject).to be_in_journey
-      end
-
-      it "should remember the entry station" do
-        subject.touch_in(station)
-        expect(subject.current_journey[:entry_station]).to eq station
-      end
-
-    end
-
-    describe "#touch_out" do
-      it "should make in_journey false" do
-        subject.touch_in(station)
-        subject.touch_out(station)
-        expect(subject).not_to be_in_journey
-      end
-
-      it "should deduct the right amount upon touching out" do
-        subject.touch_in(station)
-        expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
-      end
-    end
-
-    describe "#list_journeys" do
-      let(:entry_station) { double :station }
-      let(:exit_station) { double :station }
-      let(:journey) {{entry_station: :entry_station, exit_station: :exit_station}}
-
-      it "defaults to empty array" do
-        expect(subject.list_journeys).to eq []
-      end
-
-      it "remembers a journey" do
-        subject.touch_in(:entry_station)
-        subject.touch_out(:exit_station)
-        expect(subject.list_journeys).to include journey
-      end
-
-    end
-
-
-  end
-  context "when not topped up" do
-    describe "#touch_in" do
-      it "fails if balance is insufficient" do
-        minimum_balance = Oystercard::MINIMUM_BALANCE
-        expect{subject.touch_in(station)}.to raise_error "Card empty - #{minimum_balance} required"
-      end
+    it 'shows if in journey' do
+      expect(subject).not_to be_in_journey
     end
   end
 
-
+  describe 'journey history' do
+    let(:station1) { double(:station1) }
+    let(:station2) { double(:station2) }
+    before do
+      subject.top_up(2)
+      subject.touch_in(station1)
+    end
+    it 'touches in' do
+      expect(subject).to be_in_journey
+    end
+    it 'stores the name of the entry station' do
+      expect(subject.entry_station).to eq station1
+    end
+    it 'touches out' do
+      subject.touch_out(station2)
+      expect(subject).to_not be_in_journey
+    end
+    it 'stores journey history' do
+      subject.touch_out(station2)
+      expect(subject.journey_history.last).to eq ({ :start => station1, :finish => station2 })
+    end
+    it 'resets the entry station' do
+      subject.touch_out(station2)
+      expect(subject.entry_station).to eq nil
+    end
+  end
 
 end
