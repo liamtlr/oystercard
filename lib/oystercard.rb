@@ -8,8 +8,8 @@ class Oystercard
 
   attr_reader :balance, :list_journeys, :current_journey
 
-  def initialize
-    @balance = 0
+  def initialize(balance = 0)
+    @balance = balance
     @list_journeys = []
     @current_journey = nil
   end
@@ -24,14 +24,13 @@ class Oystercard
     fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
     if @current_journey
        @current_journey.end_journey()
-       record_journey
     else @current_journey = Journey.new(station)
     end
   end
 
   def touch_out(station)
     @current_journey = current_journey || Journey.new(station)
-    @current_journey = current_journey.end_journey(station)
+    @current_journey.end_journey(station)
     deduct @current_journey.fare
     record_journey
     @current_journey = nil
