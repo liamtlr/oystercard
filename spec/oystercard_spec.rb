@@ -1,6 +1,5 @@
 
 require './lib/oystercard'
-
 describe Oystercard do
   subject(:oystercard) {described_class.new}
   let (:station) {double(:station)}
@@ -16,12 +15,10 @@ describe Oystercard do
     it "can top up the balance" do
       expect {subject.top_up 10 }.to change{ subject.balance }.by 10
     end
-
     it "has a top_up limit" do
       #Oystercard::TOP_UP_LIMIT = 10
       expect(Oystercard::TOP_UP_LIMIT.class).to be Fixnum
     end
-
     it "fails if you try to exceed top-up limit" do
       maximum_balance = Oystercard::TOP_UP_LIMIT
       subject.top_up(maximum_balance)
@@ -33,17 +30,21 @@ describe Oystercard do
     before(:each) do
       subject.top_up(Oystercard::TOP_UP_LIMIT)
     end
-
     describe "#touch_in" do
+      let(:journey) {double :journey, entry_station: :entry_station}
       it "should make in_journey true" do
         subject.touch_in(station)
         expect(subject).to be_in_journey
       end
-
       it "should remember the entry station" do
         subject.touch_in(station)
         expect(subject.current_journey[:entry_station]).to eq station
       end
+
+      # it "creates an instance of Journey" do
+      #   subject.touch_in(station)
+      #   expect(journey).to eq station
+      # end
 
     end
 
@@ -53,7 +54,6 @@ describe Oystercard do
         subject.touch_out(station)
         expect(subject).not_to be_in_journey
       end
-
       it "should deduct the right amount upon touching out" do
         subject.touch_in(station)
         expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
@@ -64,21 +64,17 @@ describe Oystercard do
       let(:entry_station) { double :station }
       let(:exit_station) { double :station }
       let(:journey) {{entry_station: :entry_station, exit_station: :exit_station}}
-
       it "defaults to empty array" do
         expect(subject.list_journeys).to eq []
       end
-
       it "remembers a journey" do
         subject.touch_in(:entry_station)
         subject.touch_out(:exit_station)
         expect(subject.list_journeys).to include journey
       end
-
     end
-
-
   end
+
   context "when not topped up" do
     describe "#touch_in" do
       it "fails if balance is insufficient" do

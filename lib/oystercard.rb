@@ -12,7 +12,7 @@ class Oystercard
   def initialize
     @balance = 0
     @list_journeys = []
-    @current_journey={}
+    @current_journey={entry_station: nil, exit_station: nil}
   end
 
   def top_up money
@@ -26,8 +26,7 @@ class Oystercard
   end
 
   def touch_in(station)
-    #penalty + message if !(@current_journey.empty?) + reset
-    fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
+    fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
     set_entry(station)
   end
 
@@ -35,6 +34,7 @@ class Oystercard
     deduct FARE
     set_exit(station)
     record_journey
+    station
   end
 
 private
