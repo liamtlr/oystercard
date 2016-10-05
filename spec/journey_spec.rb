@@ -29,10 +29,19 @@ describe Journey do
   end
 end
 
-  describe '#charge' do
-    it 'applies a penalty charge if the journey is incomplete' do
-    expect(subject.charge). to eq penalty_fare
-  end
-end
+    describe '#fare' do
+
+      it 'defaults to a penalty fare' do
+        penalty_fare = Journey::PENALTY_FARE
+        expect(subject.fare).to eq penalty_fare
+      end
+
+      it 'changes to minimum fare if journey completed' do
+        subject.end_journey(exit_station)
+        expect(subject.fare).to eq Journey::MIN_FARE
+      end
+
+    end
+
 
 end

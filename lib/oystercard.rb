@@ -23,7 +23,7 @@ class Oystercard
   def touch_in(station)
     fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
     if @current_journey
-       @current_journey.end_journey()
+       @current_journey.end_journey(nil)
        record_journey
        @current_journey = Journey.new(station)
     else @current_journey = Journey.new(station)
@@ -31,7 +31,7 @@ class Oystercard
   end
 
   def touch_out(station)
-    @current_journey = current_journey || Journey.new("Unknown")
+    @current_journey = current_journey || Journey.new(nil)
     @current_journey.end_journey(station)
     deduct @current_journey.fare
     record_journey

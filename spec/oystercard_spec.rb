@@ -10,11 +10,11 @@ describe Oystercard do
   let (:station3) { double(:station, name: "Chorleywood", zone: 1) }
   let (:station4) { double(:station, name: "Marylebone", zone: 2) }
 
-  let (:journey1) {double(:journey)}
-  allow(journey1).to receive(:stations).and_return({station1: station2})
+  # let (:journey1) {double(:journey)}
+  # allow(journey1).to receive(:stations).and_return({station1: station2}
+  # let (:journey2) {double(:journey)}
+  # allow(journey2).to receive(:stations).and_return({station3: station4})
 
-  let (:journey2) {double(:journey)}
-  allow(journey2).to receive(:stations).and_return({station3: station4})
 
 
     it "has an initial balance of 0" do
@@ -58,15 +58,21 @@ describe Oystercard do
     end
 
     describe "#touch_out" do
-      it "should make in_journey false" do
-        subject.touch_in(station1)
-        subject.touch_out(station2)
-        expect(subject).not_to be_in_journey
-      end
+
+      # it "should make in_journey false" do
+      #   subject.touch_in(station1)
+      #   subject.touch_out(station2)
+      #   expect(subject).not_to be_in_journey
+      # end
 
       it "should deduct the right amount upon touching out" do
         subject.touch_in(station1)
-        expect{subject.touch_out(station2)}.to change{subject.balance}.by (-Oystercard::FARE)
+        expect{subject.touch_out(station2)}.to change{subject.balance}.by (-Journey::MIN_FARE)
+      end
+
+      it "applies a penalty if touching in twice" do
+        subject.touch_in(station1)
+        subject.touch_in(station2).to change{subject.balance}.by (-Journey::PENALTY_FARE)
       end
     end
 

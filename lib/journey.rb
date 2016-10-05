@@ -19,10 +19,10 @@ PENALTY_FARE = 6
   end
 
   def stations
-    if @exit_station.nil?
-         {entrystation: @entry_station[:name], exitstation: "Unknown"}
-    else {entrystation: @entry_station[:name], exitstation: @exit_station[:name]}
-    end
+
+    {entrystation: @entry_station[:name], exitstation: "Unknown"} if @exit_station.nil?
+    {entrystation: @entry_station["Unknown"], exitstation: [:name]} if @entry_station.nil?
+    {entrystation: @entry_station[:name], exitstation: @exit_station[:name]}
   end
 
   def complete?
