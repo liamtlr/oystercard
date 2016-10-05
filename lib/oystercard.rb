@@ -5,14 +5,13 @@ class Oystercard
 
   TOP_UP_LIMIT = 90
   MINIMUM_BALANCE = 1
-  FARE = 3
 
   attr_reader :balance, :list_journeys, :current_journey
 
   def initialize
     @balance = 0
     @list_journeys = []
-    @current_journey={}
+    @current_journey = nil
   end
 
   def top_up money
@@ -21,20 +20,21 @@ class Oystercard
     "Your new balance is £#{balance}"
   end
 
-  def in_journey?
-    !@current_journey.empty?
-  end
-
   def touch_in(station)
-    #penalty + message if !(@current_journey.empty?) + reset
     fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
-    set_entry(station)
+    if @current_journey
+       @current_journey.end_journey()
+       record_journey
+    else @current_journey = Journey.new(station)
+    end
   end
 
   def touch_out(station)
-    deduct FARE
-    set_exit(station)
+    @current_journey = current_journey || Journey.new(station)
+    @current_journey = current_journey.end_journey(station)
+    deduct @current_journey.fare
     record_journey
+    @current_journey = nil
   end
 
 private
@@ -52,16 +52,7 @@ private
   end
 
   def record_journey
-    @list_journeys << @current_journey
-    @current_journey = {}
-  end
-
-  def set_entry(station)
-    @current_journey[:entry_station] = station
-  end
-
-  def set_exit(station)
-    @current_journey[:exit_station] = station
+    @list_journeys << @current_journey.stations
   end
 
 end

@@ -18,7 +18,6 @@ describe Oystercard do
     end
 
     it "has a top_up limit" do
-      #Oystercard::TOP_UP_LIMIT = 10
       expect(Oystercard::TOP_UP_LIMIT.class).to be Fixnum
     end
 
@@ -35,14 +34,10 @@ describe Oystercard do
     end
 
     describe "#touch_in" do
-      it "should make in_journey true" do
-        subject.touch_in(station)
-        expect(subject).to be_in_journey
-      end
 
-      it "should remember the entry station" do
-        subject.touch_in(station)
-        expect(subject.current_journey[:entry_station]).to eq station
+      it 'creates an instance of Journey' do
+        journey = subject.touch_in(station)
+        expect(subject.current_journey).to eq journey
       end
 
     end
@@ -76,7 +71,6 @@ describe Oystercard do
       end
 
     end
-
 
   end
   context "when not topped up" do
