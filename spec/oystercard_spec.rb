@@ -40,7 +40,7 @@ end
         expect(subject.list_journeys.last.entry_station).to eq station
       end
       it "should deduct a penalty fare if touching in twice" do
-      expect{subject.touch_in(station)}.to change{subject.balance}.by (-Journey::PENALTY_FARE)
+        expect{subject.touch_in(station)}.to change{subject.balance}.by (-Journey::PENALTY_FARE)
     end
 
     end
@@ -62,14 +62,14 @@ end
 
     describe "#list_journeys" do
       before do
-        subject.touch_in(:entry_station)
-        subject.touch_out(:exit_station)
+        subject.touch_in("Margate")
+        subject.touch_out("Exeter")
       end
       it "list_journeys stores the entry station" do
-        expect(subject.list_journeys.last.entry_station).to eq :entry_station
+        expect(subject.list_journeys.last.entry_station).to eq "Margate"
       end
       it "list_journeys stores the exit station" do
-        expect(subject.list_journeys.last.exit_station).to eq :exit_station
+        expect(subject.list_journeys.last.exit_station).to eq "Exeter"
       end
     end
   end

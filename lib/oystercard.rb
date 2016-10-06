@@ -1,5 +1,5 @@
 require_relative 'station'
-require_relative 'journey'
+require_relative 'journey_log'
 
 class Oystercard
 
@@ -10,7 +10,9 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @list_journeys = []
+    @list_journeys = JourneyLog.new
+
+    puts "In initialize, @journey = #{@journey}"
   end
 
   def top_up money
@@ -20,40 +22,36 @@ class Oystercard
   end
 
   def touch_in(station)
-    fail_check
-    @journey = Journey.new(station)
-    @list_journeys << @journey
+    check_balance
+    if !@list_journeys.current_journey.nil?
+      deduct if !@list_journeys.current_journey.complete?
+    end
+    @list_journeys.start(station)
   end
 
   def touch_out(station)
     touch_out_check(station)
-    deduct
+    @list_journeys.finish(station)
   end
 
   def list_journeys
-    @list_journeys
+    @list_journeys.journeys
   end
 
 private
 
-  def fail_check
+  def check_balance
     fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
-    if !@journey.nil?
-      deduct if !@journey.complete?
-    end
   end
 
   def touch_out_check(station)
-    if @journey.nil? || !@journey.exit_station.nil?
-      @journey = Journey.new(nil, station)
-      @list_journeys << @journey
-    else
-      @journey.exit_station = station
+    if @list_journeys.current_journey.nil? || !@list_journeys.journeys[-2].complete?
+      deduct
     end
   end
 
   def deduct
-    @balance -= @journey.charge
+    @balance -= @list_journeys.current_journey.charge
     "Your new balance is £#{@balance}"
   end
 
