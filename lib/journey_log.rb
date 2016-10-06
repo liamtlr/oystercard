@@ -10,15 +10,16 @@ class JourneyLog
   end
 
   def start(station)
-    current_journey_method
+    set_current_journey_to_nil_if_double_touch_in
+    retrieve_current_journey_or_create_new
     @current_journey.entry_station = station
     @journeys << @current_journey
   end
 
   def finish(station)
-    current_journey_method
+    retrieve_current_journey_or_create_new
+    insert_current_journey_into_array_if_double_touch_out
     @current_journey.exit_station = station
-    @journeys << @current_journey
     @current_journey = nil
   end
 
@@ -28,8 +29,20 @@ class JourneyLog
 
   private
 
-  def current_journey_method
+  def set_current_journey_to_nil_if_double_touch_in
+    if @journeys.include?(@current_journey)
+      @current_journey = nil
+    end
+  end
+
+  def retrieve_current_journey_or_create_new
     @current_journey ||= @journey_class.new
+  end
+
+  def insert_current_journey_into_array_if_double_touch_out
+    if !@journeys.include?(@current_journey)
+      @journeys << @current_journey
+    end
   end
 
 end
