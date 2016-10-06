@@ -13,6 +13,7 @@ class Journey
 
   def end_journey(exit_station)
     @exit_station = exit_station
+    self
   end
 
   def complete?

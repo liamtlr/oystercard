@@ -47,7 +47,7 @@ describe Oystercard do
       end
       it "should deduct the right amount upon touching out" do
         subject.touch_in(station)
-        expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
+        expect{subject.touch_out(station)}.to change{subject.balance}.by (-Journey::MINIMUM_FARE)
       end
     end
 
@@ -74,8 +74,6 @@ describe Oystercard do
       end
     end
   end
-
-
 
   context "when not topped up" do
       describe "#touch_in" do

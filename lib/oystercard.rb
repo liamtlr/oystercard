@@ -5,7 +5,6 @@ class Oystercard
 
   TOP_UP_LIMIT = 90
   MINIMUM_BALANCE = 1
-  FARE = 3
 
   attr_reader :balance, :list_journeys, :current_journey
 
@@ -28,19 +27,21 @@ class Oystercard
   def touch_in(station)
     fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
     set_entry(station)
+    @journey = Journey.new(station)
   end
 
   def touch_out(station)
-    deduct FARE
     set_exit(station)
     record_journey
-    station
+    @journey.end_journey(station)
+    deduct
   end
 
 private
 
-  def deduct money
-    @balance -= money
+  def deduct
+    @balance -= @journey.charge
+    "Your new balance is #{@balance}"
   end
 
   def empty?
