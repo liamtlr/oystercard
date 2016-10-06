@@ -11,8 +11,7 @@ class Oystercard
   def initialize
     @balance = 0
     @list_journeys = JourneyLog.new
-
-    puts "In initialize, @journey = #{@journey}"
+    puts "In initialize, @list_journeys = #{@list_journeys}"
   end
 
   def top_up money
@@ -30,8 +29,14 @@ class Oystercard
   end
 
   def touch_out(station)
-    touch_out_check(station)
+# If the previous journey wasn't complete. deduct penalty fare
+    # if !@list_journeys.journeys.last.nil? && @list_journeys.journeys.last.exit_station.nil?
+    #   deduct
+    # end
+    # if @list_journeys.journeys.last.nil? && @list_journeys.journeys.last.complete?
+    # end
     @list_journeys.finish(station)
+    deduct
   end
 
   def list_journeys
@@ -44,14 +49,8 @@ private
     fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
   end
 
-  def touch_out_check(station)
-    if @list_journeys.current_journey.nil? || !@list_journeys.journeys[-2].complete?
-      deduct
-    end
-  end
-
   def deduct
-    @balance -= @list_journeys.current_journey.charge
+    @balance -= @list_journeys.journeys.last.charge
     "Your new balance is £#{@balance}"
   end
 
@@ -64,3 +63,16 @@ private
   end
 
 end
+
+
+# def touch_out(station)
+#   @list_journeys.finish(station)
+#   if @list_journeys.current_journey.entry_station.nil?
+#     if !@list_journeys.journeys[-2].complete?
+#       deduct
+#     elsif @list_journeys.count == 1
+#       deduct
+#     end
+#   end
+#   deduct
+# end

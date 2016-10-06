@@ -10,15 +10,16 @@ class JourneyLog
   end
 
   def start(station)
-    current_journey_method(station)
+    current_journey_method
+    @current_journey.entry_station = station
     @journeys << @current_journey
   end
 
   def finish(station)
-    puts "In finish, @current_journey = #{@current_journey}"
+    current_journey_method
     @current_journey.exit_station = station
-    #@current_journey = nil
-    puts "And then @current_journey = #{@current_journey}"
+    @journeys << @current_journey
+    @current_journey = nil
   end
 
   def journeys
@@ -27,8 +28,8 @@ class JourneyLog
 
   private
 
-  def current_journey_method(station)
-    @current_journey ||= @journey_class.new(station, nil)
+  def current_journey_method
+    @current_journey ||= @journey_class.new
   end
 
 end
