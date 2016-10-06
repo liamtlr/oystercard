@@ -8,9 +8,6 @@ describe Oystercard do
     expect(subject.balance).to eq 0
   end
 
-  it { is_expected.to respond_to :list_journeys }
-
-
   describe "#top_up" do
     it "can top up the balance" do
       expect {subject.top_up 10 }.to change{ subject.balance }.by 10
@@ -40,12 +37,6 @@ describe Oystercard do
         subject.touch_in(station)
         expect(subject.current_journey[:entry_station]).to eq station
       end
-
-      # it "creates an instance of Journey" do
-      #   subject.touch_in(station)
-      #   expect(journey).to eq station
-      # end
-
     end
 
     describe "#touch_out" do
@@ -59,6 +50,15 @@ describe Oystercard do
         expect{subject.touch_out(station)}.to change{subject.balance}.by (-Oystercard::FARE)
       end
     end
+
+    describe "in_journey" do
+      it "returns whether a journey has been initiated but not completed" do
+        subject.touch_in(station)
+        expect(subject.in_journey?).to be true
+      end
+    end
+
+    it { is_expected.to respond_to :list_journeys }
 
     describe "#list_journeys" do
       let(:entry_station) { double :station }
@@ -75,13 +75,21 @@ describe Oystercard do
     end
   end
 
+
+
   context "when not topped up" do
-    describe "#touch_in" do
-      it "fails if balance is insufficient" do
-        minimum_balance = Oystercard::MINIMUM_BALANCE
-        expect{subject.touch_in(station)}.to raise_error "Card empty - £#{minimum_balance} required"
+      describe "#touch_in" do
+        it "fails if balance is insufficient" do
+          minimum_balance = Oystercard::MINIMUM_BALANCE
+          expect{subject.touch_in(station)}.to raise_error "Card empty - £#{minimum_balance} required"
+        end
       end
     end
-  end
 
 end
+
+
+      it "creates an instance of Journey" do
+        subject.touch_in(station)
+        expect(journey).to eq station
+      end

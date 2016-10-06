@@ -41,6 +41,6 @@ end
       expect(subject.charge).to eq minimum_fare
     end
 
-end
+  end
 
 end
