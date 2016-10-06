@@ -88,8 +88,7 @@ describe Oystercard do
 
 end
 
-
-      it "creates an instance of Journey" do
-        subject.touch_in(station)
-        expect(journey).to eq station
-      end
+      # it "creates an instance of Journey" do
+      #   subject.touch_in(station)
+      #   expect(journey).to eq station
+      # end
