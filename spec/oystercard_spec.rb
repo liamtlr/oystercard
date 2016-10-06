@@ -3,17 +3,24 @@ require './lib/oystercard'
 describe Oystercard do
   subject(:oystercard) {described_class.new}
   let (:station) {double(:station)}
+  let(:entry_station) { double :station }
+  let(:exit_station) { double :station }
+  let(:journey) {double :journey, entry_station: :exit_station}
 
-  it "has an initial balance of 0" do
+  describe "#initialize" do
+    it "has an initial balance of 0" do
     expect(subject.balance).to eq 0
   end
+  it "list_journeys defaults to empty array" do
+    expect(subject.list_journeys).to eq []
+  end
+end
 
   describe "#top_up" do
     it "can top up the balance" do
       expect {subject.top_up 10 }.to change{ subject.balance }.by 10
     end
     it "has a top_up limit" do
-      #Oystercard::TOP_UP_LIMIT = 10
       expect(Oystercard::TOP_UP_LIMIT.class).to be Fixnum
     end
     it "fails if you try to exceed top-up limit" do
@@ -26,51 +33,43 @@ describe Oystercard do
   context "when topped up" do
     before(:each) do
       subject.top_up(Oystercard::TOP_UP_LIMIT)
+      subject.touch_in(station)
     end
     describe "#touch_in" do
-      let(:journey) {double :journey, entry_station: :entry_station}
-      it "should make in_journey true" do
-        subject.touch_in(station)
-        expect(subject).to be_in_journey
-      end
       it "should remember the entry station" do
-        subject.touch_in(station)
-        expect(subject.current_journey[:entry_station]).to eq station
+        expect(subject.list_journeys.last.entry_station).to eq station
       end
+      it "should deduct a penalty fare if touching in twice" do
+      expect{subject.touch_in(station)}.to change{subject.balance}.by (-Journey::PENALTY_FARE)
+    end
+
     end
 
     describe "#touch_out" do
-      it "should make in_journey false" do
-        subject.touch_in(station)
-        subject.touch_out(station)
-        expect(subject).not_to be_in_journey
-      end
-      it "should deduct the right amount upon touching out" do
+
+      it "should deduct the standard fare for a completed journey" do
         subject.touch_in(station)
         expect{subject.touch_out(station)}.to change{subject.balance}.by (-Journey::MINIMUM_FARE)
       end
-    end
-
-    describe "in_journey" do
-      it "returns whether a journey has been initiated but not completed" do
+      it "should deduct a penalty fare if touching out twice" do
         subject.touch_in(station)
-        expect(subject.in_journey?).to be true
+        subject.touch_out(station)
+        expect{subject.touch_out(station)}.to change{subject.balance}.by (-Journey::PENALTY_FARE)
       end
     end
 
     it { is_expected.to respond_to :list_journeys }
 
     describe "#list_journeys" do
-      let(:entry_station) { double :station }
-      let(:exit_station) { double :station }
-      let(:journey) {{entry_station: :entry_station, exit_station: :exit_station}}
-      it "defaults to empty array" do
-        expect(subject.list_journeys).to eq []
-      end
-      it "remembers a journey" do
+      before do
         subject.touch_in(:entry_station)
         subject.touch_out(:exit_station)
-        expect(subject.list_journeys).to include journey
+      end
+      it "list_journeys stores the entry station" do
+        expect(subject.list_journeys.last.entry_station).to eq :entry_station
+      end
+      it "list_journeys stores the exit station" do
+        expect(subject.list_journeys.last.exit_station).to eq :exit_station
       end
     end
   end
@@ -85,8 +84,3 @@ describe Oystercard do
     end
 
 end
-
-      # it "creates an instance of Journey" do
-      #   subject.touch_in(station)
-      #   expect(journey).to eq station
-      # end

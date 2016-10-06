@@ -6,12 +6,11 @@ class Oystercard
   TOP_UP_LIMIT = 90
   MINIMUM_BALANCE = 1
 
-  attr_reader :balance, :list_journeys, :current_journey
+  attr_reader :balance, :list_journeys
 
   def initialize
     @balance = 0
     @list_journeys = []
-    @current_journey={}
   end
 
   def top_up money
@@ -20,24 +19,38 @@ class Oystercard
     "Your new balance is £#{balance}"
   end
 
-  def in_journey?
-    !@current_journey.empty?
-  end
-
   def touch_in(station)
-    fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
-    set_entry(station)
+    fail_check
     @journey = Journey.new(station)
+    @list_journeys << @journey
   end
 
   def touch_out(station)
-    set_exit(station)
-    record_journey
-    @journey.end_journey(station)
+    touch_out_check(station)
     deduct
   end
 
+  def list_journeys
+    @list_journeys
+  end
+
 private
+
+  def fail_check
+    fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
+    if !@journey.nil?
+      deduct if !@journey.complete?
+    end
+  end
+
+  def touch_out_check(station)
+    if @journey.nil? || !@journey.exit_station.nil?
+      @journey = Journey.new(nil, station)
+      @list_journeys << @journey
+    else
+      @journey.exit_station = station
+    end
+  end
 
   def deduct
     @balance -= @journey.charge
@@ -50,19 +63,6 @@ private
 
   def over_limit? money
     balance + money > TOP_UP_LIMIT
-  end
-
-  def record_journey
-    @list_journeys << @current_journey
-    @current_journey = {}
-  end
-
-  def set_entry(station)
-    @current_journey[:entry_station] = station
-  end
-
-  def set_exit(station)
-    @current_journey[:exit_station] = station
   end
 
 end
