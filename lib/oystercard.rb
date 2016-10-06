@@ -41,7 +41,7 @@ private
 
   def deduct
     @balance -= @journey.charge
-    "Your new balance is #{@balance}"
+    "Your new balance is £#{@balance}"
   end
 
   def empty?
