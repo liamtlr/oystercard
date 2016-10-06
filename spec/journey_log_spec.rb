@@ -4,18 +4,12 @@ describe JourneyLog do
 
   let(:entry_station) { double :station }
   let(:exit_station) { double :station }
+  let(:journey) { double :journey }
+  let(:journey_class){double :journey_class, new: journey}
+  # subject {described_class.new(journey_class: journey_class)}
 
-  it 'responds to start' do
-    expect(subject).to respond_to(:start).with(1).argument
-  end
 
-  it 'responds to finish' do
-    expect(subject).to respond_to(:finish).with(1).argument
-  end
 
-  it 'responds to journeys' do
-    expect(subject).to respond_to(:journeys)
-  end
 
   describe "#start" do
 
@@ -26,8 +20,20 @@ describe JourneyLog do
 
     it 'puts an actual journey in the journeys array' do
       subject.start(entry_station)
-      expect(subject.journeys.last).to be_an_instance_of Journey
+      expect(subject.current_journey.entry_station).to eq entry_station
     end
+
+    # it 'starts a journey' do
+    #   expect(journey_class).to receive(:new).with(entry_station: entry_station)
+    #   subject.start(entry_station)
+    # end
+
+    # it 'records a journey' do
+    #   allow(journey_class).to receive(:new).and_return journey
+    #   subject.start(entry_station)
+    #   expect(subject.journeys).to include journey
+    # end
+
 
   end
 
@@ -38,7 +44,11 @@ describe JourneyLog do
       subject.finish(exit_station)
       expect(subject.journeys.last.exit_station).to eq exit_station
     end
-
+    # it 'resets the current journey' do
+    #   subject.start(entry_station)
+    #   subject.finish(exit_station)
+    #   expect(subject.current_journey).to be_nil
+    # end
   end
 
 end
