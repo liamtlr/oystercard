@@ -11,7 +11,6 @@ class Oystercard
   def initialize
     @balance = 0
     @list_journeys = JourneyLog.new
-    puts "In initialize, @list_journeys = #{@list_journeys}"
   end
 
   def top_up money
@@ -29,12 +28,6 @@ class Oystercard
   end
 
   def touch_out(station)
-# If the previous journey wasn't complete. deduct penalty fare
-    # if !@list_journeys.journeys.last.nil? && @list_journeys.journeys.last.exit_station.nil?
-    #   deduct
-    # end
-    # if @list_journeys.journeys.last.nil? && @list_journeys.journeys.last.complete?
-    # end
     @list_journeys.finish(station)
     deduct
   end
@@ -63,16 +56,3 @@ private
   end
 
 end
-
-
-# def touch_out(station)
-#   @list_journeys.finish(station)
-#   if @list_journeys.current_journey.entry_station.nil?
-#     if !@list_journeys.journeys[-2].complete?
-#       deduct
-#     elsif @list_journeys.count == 1
-#       deduct
-#     end
-#   end
-#   deduct
-# end
