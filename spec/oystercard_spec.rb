@@ -13,7 +13,7 @@ describe Oystercard do
       expect(subject.balance).to eq 0
     end
     it "list_journeys defaults to empty array" do
-      expect(subject.list_journeys).to eq []
+      expect(subject.log).to eq []
     end
   end
 
@@ -38,7 +38,7 @@ describe Oystercard do
       end
       it "should remember the entry station" do
         subject.touch_in(station)
-        expect(subject.list_journeys.last.entry_station).to eq station
+        expect(subject.log.last.entry_station).to eq station
       end
       it "should deduct a penalty fare if touching in twice" do
         subject.touch_in(station)
@@ -78,10 +78,10 @@ describe Oystercard do
     end
 
     it "list_journeys stores the entry station" do
-      expect(subject.list_journeys.last.entry_station).to eq "Margate"
+      expect(subject.log.last.entry_station).to eq "Margate"
     end
     it "list_journeys stores the exit station" do
-      expect(subject.list_journeys.last.exit_station).to eq "Exeter"
+      expect(subject.log.last.exit_station).to eq "Exeter"
     end
   end
 

@@ -10,7 +10,7 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @list_journeys = JourneyLog.new
+    @log = JourneyLog.new
   end
 
   def top_up money
@@ -21,19 +21,19 @@ class Oystercard
 
   def touch_in(station)
     check_balance
-    if !@list_journeys.current_journey.nil?
-      deduct if !@list_journeys.current_journey.complete?
+    if !@log.current_journey.nil?
+      deduct if !@log.current_journey.complete?
     end
-    @list_journeys.start(station)
+    @log.start(station)
   end
 
   def touch_out(station)
-    @list_journeys.finish(station)
+    @log.finish(station)
     deduct
   end
 
-  def list_journeys
-    @list_journeys.journeys
+  def log
+    @log.journeys
   end
 
 private
@@ -43,7 +43,7 @@ private
   end
 
   def deduct
-    @balance -= @list_journeys.journeys.last.charge
+    @balance -= @log.journeys.last.charge
     "Your new balance is £#{@balance}"
   end
 
