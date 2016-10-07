@@ -22,11 +22,7 @@ describe JourneyLog do
   end
 
   describe "#finish" do
-    it "should add an exit station to the current_journey" do
-      subject.start(waterloo)
-      subject.finish(stockwell)
-      expect(subject.exit_station).to eq stockwell
-    end
+    
     it "resets the entry station" do
       subject.start(waterloo)
       subject.finish(stockwell)

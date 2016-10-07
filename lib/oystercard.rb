@@ -9,9 +9,9 @@ class Oystercard
   MINIMUM_FARE = 1
   PENALTY_FARE = 6
 
-  def initialize
+  def initialize(journey_log: JourneyLog)
     @balance = 0
-    @journey_log = [] #journeylog
+    @journey_log = journey_log.new
   end
 
   def top_up(money)
@@ -22,16 +22,12 @@ class Oystercard
   def touch_in(entry_station)
     fail "Insufficient balance" if balance < MINIMUM_FARE
     double_touch_in_checker
-    @current_journey = Journey.new(entry_station)
+    @journey_log.start(entry_station)
   end
 
   def touch_out(exit_station)
     double_touch_out_checker(exit_station)
     end_current_journey(exit_station)
-  end
-
-  def journey_history
-    @journey_log
   end
 
   private
@@ -42,17 +38,16 @@ class Oystercard
 
 
   def double_touch_out_checker exit_station
-    @current_journey = Journey.new if !@current_journey
+    @journey_log.start(nil) if !@journey_log.entry_station
   end
 
 
   def double_touch_in_checker
-    end_current_journey(nil) if @current_journey
+    end_current_journey(nil) if @journey_log.current_journey
   end
 
   def end_current_journey(exit_station)
-    @current_journey.end(exit_station)
-    deduct(@current_journey.fare)
-    @current_journey = nil
+    @journey_log.finish(exit_station)
+    deduct(@journey_log.current_journey.fare)
   end
 end
