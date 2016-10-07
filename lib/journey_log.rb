@@ -7,6 +7,8 @@ class JourneyLog
   def initialize(journey_class: Journey )
     @journey_class = journey_class
     @journeys = []
+    @entry_station = nil
+    @exit_station = nil
   end
 
   def start(entry_station)
