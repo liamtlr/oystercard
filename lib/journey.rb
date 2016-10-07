@@ -9,12 +9,12 @@ class Journey
     @exit_station = exit_station
   end
 
+  def complete?
+    @entry_station && @exit_station
+  end
+
   def fare
-    if @entry_station == nil || @exit_station == nil
-      @fare = Oystercard::PENALTY_FARE
-    else
-      @fare = 1 + calc_zone_difference
-    end
+    complete? ? (1 + calc_zone_difference) : Oystercard::PENALTY_FARE
   end
 
   def return_journey_hash
