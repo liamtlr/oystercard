@@ -19,12 +19,12 @@ describe JourneyLog do
       subject.start(waterloo)
       expect(subject.entry_station).to eq waterloo
     end
-    it 'creates separate entries to journeys on double touch out' do
-      subject.start(waterloo)
-      subject.start(waterloo)
-      subject.finish(stockwell)
-      expect(subject.journeys.count).to eq 2
-    end
+    # it 'creates separate entries to journeys on double touch out' do
+    #   subject.start(waterloo)
+    #   subject.start(waterloo)
+    #   subject.finish(stockwell)
+    #   expect(subject.journeys.count).to eq 2
+    # end
   end
 
   describe "#finish" do

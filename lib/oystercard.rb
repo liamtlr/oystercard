@@ -44,7 +44,7 @@ class Oystercard
 
 
   def double_touch_in_checker
-    end_current_journey(nil) if @journey_log.current_journey
+    end_current_journey(nil) if @journey_log.entry_station
   end
 
   def end_current_journey(exit_station)

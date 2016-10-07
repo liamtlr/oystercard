@@ -30,7 +30,7 @@ class JourneyLog
   private
 
   def current_journey_method(entry_station)
-    @current_journey ||= @journey_class.new(entry_station)
+    @current_journey = @journey_class.new(entry_station)
   end
 
   def complete_journey_log

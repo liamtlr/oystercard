@@ -61,9 +61,6 @@ describe Oystercard do
   end
 
   describe '#initialize' do
-    it 'has empty list of journeys' do
-      expect(subject.journey_history).to be_empty
-    end
 
     it 'balance is zero' do
       expect(subject.balance).to eq(0)
