@@ -31,6 +31,7 @@ describe JourneyLog do
 
   describe '#journeys' do
     it "records journeys" do
+      journey = {entry_station: waterloo, exit_station: stockwell, fare: Oystercard::MINIMUM_FARE}
       subject.start(waterloo)
       subject.finish(stockwell)
       expect(subject.journeys).to include journey

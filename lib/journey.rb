@@ -25,9 +25,7 @@ class Journey
       @fare = Oystercard::MINIMUM_FARE
     end
   end
-
-  private
-
+  
   def return_journey_hash
     {entry_station: @entry_station, exit_station: @exit_station, fare: @fare}
   end
