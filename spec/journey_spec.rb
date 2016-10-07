@@ -3,6 +3,9 @@ require 'oystercard'
 
 describe Journey do
 
+  let(:waterloo) { double :station, :name => "waterloo", :zone => 1}
+  let(:stockwell) { double :station, :name => "stockwell", :zone => 1}
+
   describe '#initialize' do
 
     it 'has a default entry_station of nil' do
@@ -12,16 +15,16 @@ describe Journey do
 
   context 'given an entry station' do
 
-    subject {described_class.new("borough", "waterloo")}
+    subject {described_class.new(stockwell, waterloo)}
 
     it 'has an entry station' do
-      expect(subject.entry_station).to eq "borough"
+      expect(subject.entry_station).to eq stockwell
     end
   end
 
   describe '#fare' do
     it 'charges MINIMUM_FARE for a complete trip' do
-      test_journey = described_class.new("waterloo", "borough")
+      test_journey = described_class.new(waterloo, stockwell)
       expect(test_journey.fare).to eq(Oystercard::MINIMUM_FARE)
     end
 

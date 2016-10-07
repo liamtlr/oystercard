@@ -4,8 +4,8 @@ require 'oystercard'
 describe JourneyLog do
     let(:journey) { double :journey }
     subject {described_class.new}
-    let(:waterloo) { double :station }
-    let(:stockwell) { double :station }
+    let(:waterloo) { double :station, :name => "waterloo", :zone => 1}
+    let(:stockwell) { double :station, :name => "stockwell", :zone => 1}
 
 =begin
   it "should initialise with a journey_class parameter" do
