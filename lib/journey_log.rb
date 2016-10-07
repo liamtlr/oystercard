@@ -1,5 +1,4 @@
 require_relative 'journey'
-require_relative 'oystercard'
 
 class JourneyLog
   attr_reader :entry_station, :exit_station, :current_journey
@@ -12,15 +11,16 @@ class JourneyLog
   end
 
   def start(entry_station)
+    double_touch_in_checker
     @entry_station = entry_station
-    current_journey_method(entry_station)
   end
 
   def finish(exit_station)
+    double_touch_out_checker
     @exit_station = exit_station
-    @current_journey.end(exit_station)
+    current_journey_method(entry_station, exit_station)
     @journeys << @current_journey.return_journey_hash
-    complete_journey_log
+    clear_journey_log
   end
 
   def journeys
@@ -29,13 +29,21 @@ class JourneyLog
 
   private
 
-  def current_journey_method(entry_station)
-    @current_journey = @journey_class.new(entry_station)
+  def current_journey_method(entry_station, exit_station)
+    @current_journey = @journey_class.new(entry_station, exit_station)
   end
 
-  def complete_journey_log
+  def clear_journey_log
     @entry_station = nil
     @exit_station = nil
+  end
+
+  def double_touch_out_checker
+    self.start(nil) if !entry_station
+  end
+
+  def double_touch_in_checker
+    self.finish(nil) if entry_station
   end
 
 end

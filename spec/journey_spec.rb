@@ -10,49 +10,18 @@ describe Journey do
     end
   end
 
-  describe '#complete?' do
-    it "knows if a journey is not complete" do
-      expect(subject).not_to be_complete
-    end
-  end
-
   context 'given an entry station' do
 
-    subject {described_class.new(entry_station = "station")}
+    subject {described_class.new("borough", "waterloo")}
 
     it 'has an entry station' do
-      expect(subject.entry_station).to eq "station"
-    end
-  end
-
-  describe '#end' do
-    before do
-      described_class.new(entry_station = "station")
-      subject.end("other_station")
-    end
-
-    it "should return a hash with journey details" do
-      journey = {:entry_station => "waterloo", :exit_station => "borough", :fare => Oystercard::MINIMUM_FARE}
-      our_journey = described_class.new("waterloo")
-      expect(our_journey.end("borough")).to eq journey
-    end
-  end
-
-  describe '#complete' do
-    before do
-      described_class.new(entry_station = "station")
-      subject.end("other_station")
-    end
-
-    it "knows if a journey is complete" do
-      expect(subject).to be_complete
+      expect(subject.entry_station).to eq "borough"
     end
   end
 
   describe '#fare' do
     it 'charges MINIMUM_FARE for a complete trip' do
-      test_journey = described_class.new("station")
-      test_journey.end("other_station")
+      test_journey = described_class.new("waterloo", "borough")
       expect(test_journey.fare).to eq(Oystercard::MINIMUM_FARE)
     end
 

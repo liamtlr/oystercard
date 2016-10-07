@@ -31,15 +31,10 @@ describe Oystercard do
       expect{subject.touch_in(entry_station)}.to raise_error "Insufficient balance"
     end
 
-    it 'creates new journey' do
-      subject.top_up(described_class::MAXIMUM_BALANCE)
-      expect(subject.touch_in(entry_station).class).to eq(Journey)
-    end
-
     it 'if user touches in twice, they are charged a penalty' do
       subject.top_up(described_class::MAXIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      expect{subject.touch_in(double(:station))}.to change{subject.balance}.by(-1*described_class::PENALTY_FARE)
+      subject.touch_in("borough")
+      expect{subject.touch_in("waterloo")}.to change{subject.balance}.by(-1*(described_class::PENALTY_FARE))
     end
   end
 

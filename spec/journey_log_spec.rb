@@ -1,4 +1,5 @@
 require 'journey_log'
+require 'oystercard'
 
 describe JourneyLog do
     let(:journey) { double :journey }
