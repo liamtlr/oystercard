@@ -1,13 +1,11 @@
 require 'journey_log'
 
 describe JourneyLog do
-
-    journey = Journey.new
-
-    subject {described_class.new(journey)}
+    let(:journey) { double :journey }
+    subject {described_class.new}
     let(:waterloo) { double :station }
     let(:stockwell) { double :station }
-    let(:journey) { double :journey }
+
 =begin
   it "should initialise with a journey_class parameter" do
     expect(described_class.new(journey).class).to eq JourneyLog
