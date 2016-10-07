@@ -34,5 +34,6 @@ describe Journey do
       described_class.new
       expect(subject.fare).to eq(Oystercard::PENALTY_FARE)
     end
+
   end
 end

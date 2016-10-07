@@ -2,8 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
   subject { described_class.new }
-  let(:entry_station) {double(:station)}
-  let(:exit_station) {double(:station)}
+  let(:entry_station) {double(:station, :name => "waterloo", :zone => 1)}
+  let(:exit_station) {double(:station, :name => "borough", :zone => 2)}
   let(:journey) {double(:journey)} #{ {entry_station: entry_station, exit_station: exit_station} }
 
   context 'With max balance on card' do
@@ -46,12 +46,16 @@ describe Oystercard do
     end
 
     it 'deducts the correct amount from card' do
-      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by (-described_class::MINIMUM_FARE)
+      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by(-described_class::MINIMUM_FARE)
     end
 
     it "charges penalty if you touch out twice" do
       subject.touch_out(double(:station))
       expect{subject.touch_out(double(:station))}.to change{subject.balance}.by(-1*described_class::PENALTY_FARE)
+    end
+
+    it "charges 2 for a journey zone 2 to 1" do
+      expect{subject.touch_out(exit_station)}.to change{subject.balance}.by(-2)
     end
   end
 
