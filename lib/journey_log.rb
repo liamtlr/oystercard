@@ -40,7 +40,7 @@ class JourneyLog
   end
 
   def insert_current_journey_into_array_if_double_touch_out
-    if !@journeys.include?(@current_journey)
+    unless @journeys.include?(@current_journey)
       @journeys << @current_journey
     end
   end

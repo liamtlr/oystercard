@@ -21,8 +21,8 @@ class Oystercard
 
   def touch_in(station)
     check_balance
-    if !@log.current_journey.nil?
-      deduct if !@log.current_journey.complete?
+    unless @log.current_journey.nil?
+      deduct unless @log.current_journey.complete?
     end
     @log.start(station)
   end
@@ -36,7 +36,7 @@ class Oystercard
     @log.journeys
   end
 
-private
+  private
 
   def check_balance
     fail "Card empty - £#{MINIMUM_BALANCE} required" if empty?
