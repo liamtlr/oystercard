@@ -27,6 +27,17 @@ describe JourneyLog do
       subject.finish(stockwell)
       expect(subject.exit_station).to eq stockwell
     end
+    it "resets the entry station" do
+      subject.start(waterloo)
+      subject.finish(stockwell)
+      expect(subject.entry_station).to eq nil
+    end
+
+    it "resets the exit station" do
+      subject.start(waterloo)
+      subject.finish(stockwell)
+      expect(subject.exit_station).to eq nil
+    end
   end
 
   describe '#journeys' do

@@ -1,4 +1,5 @@
 require_relative 'journey'
+require_relative 'oystercard'
 
 class JourneyLog
   attr_reader :entry_station, :exit_station
